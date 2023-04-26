@@ -10,33 +10,43 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database()
+var status_D4;
 
-function D4() {
+function getdata() {
     const dbRef = database.ref();
-    var status_D4;
     dbRef.child("D4").get().then((snapshot) => {
         if (snapshot.exists()) {
             status_D4 = snapshot.val();
-            console.log(status_D4);
-            if (status_D4) {
-                database.ref('/').set({
-                    D4: 0
-                });
-            } else {
-                database.ref('/').set({
-                    D4: 1
-                });
-            }
-            // if (status_D4 = 0) {
-            //     database.ref('/').set({
-            //         D4: 1
-            //     });
-            // }
         } else {
             console.log("No data available");
         }
     }).catch((error) => {
         console.error(error);
     });
-    // alert('Saved');
+    if (status_D4) {
+        document.getElementById("status").innerHTML = "ON";
+    } else {
+        document.getElementById("status").innerHTML = "OFF";
+    }
+}
+function D4() {
+    if (status_D4) {
+        database.ref('/').set({
+            D4: 0
+        });
+        status_D4 = 0;
+        document.getElementById("thongbao").innerHTML = "Đã tắt D4!";
+        document.getElementById("status").innerHTML = "OFF";
+    } else {
+        database.ref('/').set({
+            D4: 1
+        });
+        status_D4 = 1;
+        document.getElementById("thongbao").innerHTML = "Đã bật D4!";
+        document.getElementById("status").innerHTML = "ON";
+    }
+}
+
+window.onload = function () {
+    getdata();
 }
